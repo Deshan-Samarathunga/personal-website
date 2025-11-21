@@ -238,6 +238,34 @@
             min-height: 100vh;
         }
         .section { background: transparent; }
+
+        #section-hero {
+            display: flex;
+            align-items: center;
+        }
+        @media (max-width: 992px) {
+            #section-hero {
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+        }
+        @media (max-width: 640px) {
+            #section-hero .container {
+                min-height: 100vh;
+                display: flex;
+                align-items: flex-end;
+                padding-bottom: 5rem;
+            }
+            .hero-content {
+                margin-top: 0;
+                margin-bottom: 2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-content {
+                margin-bottom: 3rem;
+            }
+        }
         .section:not(#section-hero) .fp-overflow {
             background-color: rgba(3, 6, 16, 0.85); /* Darker backing for readability */
             backdrop-filter: blur(8px);
@@ -335,14 +363,22 @@
         <div class="cursor-core"></div>
     </div>
 
-    <!-- Nav Trigger -->
-    <div id="menu-trigger" class="fixed top-8 right-8 cursor-pointer group flex items-center gap-4 mix-blend-difference">
-        <span id="menu-text" class="hidden md:block text-xs font-mono text-white group-hover:text-yellow-400 transition-colors tracking-widest">MENU</span>
-        <div class="flex flex-col justify-center items-end space-y-1.5 w-8 h-6">
-            <div id="line-1" class="w-8 h-0.5 bg-white group-hover:bg-yellow-400 transition-all duration-300"></div>
-            <div id="line-2" class="w-5 h-0.5 bg-white group-hover:bg-yellow-400 transition-all duration-300"></div>
+    <!-- Logo & Nav Trigger -->
+    <header class="fixed top-6 left-6 right-6 flex items-center justify-between z-50">
+        <div class="flex items-center gap-3 text-sm font-bold tracking-[0.3em] uppercase">
+            <div class="w-8 h-8 border border-yellow-400 flex items-center justify-center">
+                <div class="w-3 h-3 bg-yellow-400"></div>
+            </div>
+            <span>DEV.STUDENT</span>
         </div>
-    </div>
+        <div id="menu-trigger" class="cursor-pointer group flex items-center gap-4 mix-blend-difference">
+            <span id="menu-text" class="hidden md:block text-xs font-mono text-white group-hover:text-yellow-400 transition-colors tracking-widest">MENU</span>
+            <div class="flex flex-col justify-center items-end space-y-1.5 w-8 h-6">
+                <div id="line-1" class="w-8 h-0.5 bg-white group-hover:bg-yellow-400 transition-all duration-300"></div>
+                <div id="line-2" class="w-5 h-0.5 bg-white group-hover:bg-yellow-400 transition-all duration-300"></div>
+            </div>
+        </div>
+    </header>
 
     <!-- Scroll Indicator -->
     <aside class="scroll-indicator hidden md:block">
@@ -375,7 +411,7 @@
             <div class="container mx-auto px-6 md:px-12 h-full flex items-center">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full">
                     <div class="hidden lg:block"></div> <!-- Spacer -->
-                    <div class="animate-up delay-100">
+                    <div class="animate-up delay-100 hero-content">
                         <div class="flex items-center space-x-4 mb-6 font-mono text-xs text-yellow-400">
                             <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
                             <span>SYSTEM STATUS: ONLINE</span>
@@ -390,11 +426,6 @@
                         <a href="#projects" class="btn-enter inline-block">VIEW SELECTED WORKS</a>
                     </div>
                 </div>
-            </div>
-            <!-- Logo watermark -->
-            <div class="absolute bottom-8 left-8 md:left-12 font-bold text-xl tracking-widest flex items-center gap-3">
-                <div class="w-8 h-8 border border-yellow-400 flex items-center justify-center"><div class="w-3 h-3 bg-yellow-400"></div></div>
-                <span>DEV.STUDENT</span>
             </div>
         </div>
 
