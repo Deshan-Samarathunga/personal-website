@@ -31,6 +31,35 @@
             cursor: none;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .form-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            padding: 0.85rem 1rem;
+            color: white;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-field::placeholder {
+            color: rgba(148, 163, 184, 0.5);
+        }
+        .form-field:focus {
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+            outline: none;
+        }
+        textarea.form-field {
+            min-height: 160px;
+            resize: none;
+        }
+
         .anchor-offset {
             position: relative;
             top: -80px;
@@ -69,6 +98,7 @@
             z-index: 9999;
             mix-blend-mode: difference;
             will-change: transform;
+            transform: translate(-50%, -50%);
         }
         .cursor-ring {
             position: absolute;
@@ -140,11 +170,13 @@
             content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 10px;
             border-top: 2px solid var(--glass-border); border-left: 2px solid var(--glass-border);
             transition: all 0.3s ease;
+            pointer-events: none;
         }
         .glass-panel::after {
             content: ''; position: absolute; bottom: 0; right: 0; width: 10px; height: 10px;
             border-bottom: 2px solid var(--glass-border); border-right: 2px solid var(--glass-border);
             transition: all 0.3s ease;
+            pointer-events: none;
         }
         .glass-panel:hover {
             transform: translateY(-4px);
@@ -202,6 +234,9 @@
         }
 
         /* --- FullPage Overrides --- */
+        #fullpage, .section {
+            min-height: 100vh;
+        }
         .section { background: transparent; }
         .section:not(#section-hero) .fp-overflow {
             background-color: rgba(3, 6, 16, 0.85); /* Darker backing for readability */
@@ -210,13 +245,8 @@
         
         /* Animations */
         .animate-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        }
-        .active .animate-up {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
         }
         .delay-100 { transition-delay: 0.1s; }
         .delay-200 { transition-delay: 0.2s; }
@@ -531,14 +561,14 @@
                         <form class="space-y-6">
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="relative group">
-                                    <input type="text" placeholder="NAME" class="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-yellow-400 outline-none transition-colors font-mono text-sm placeholder:text-gray-600">
+                                    <input type="text" placeholder="NAME" class="form-field">
                                 </div>
                                 <div class="relative group">
-                                    <input type="email" placeholder="EMAIL" class="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-yellow-400 outline-none transition-colors font-mono text-sm placeholder:text-gray-600">
+                                    <input type="email" placeholder="EMAIL" class="form-field">
                                 </div>
                             </div>
                             <div class="relative group">
-                                <textarea rows="4" placeholder="MESSAGE DATA..." class="w-full bg-transparent border-b border-gray-700 py-3 text-white focus:border-yellow-400 outline-none transition-colors font-mono text-sm placeholder:text-gray-600 resize-none"></textarea>
+                                <textarea rows="4" placeholder="MESSAGE DATA..." class="form-field"></textarea>
                             </div>
                             <button type="submit" class="btn-enter w-full mt-4">TRANSMIT</button>
                         </form>
@@ -753,13 +783,15 @@
             if (fill) fill.style.transform = `translateY(-${100 - (idx * 25)}%)`;
         };
 
+        const FULLPAGE_BREAKPOINT = 900;
+
         const fullpageOptions = {
             licenseKey: 'gplv3-license',
             credits: { enabled: false },
             menu: '#overlay-menu',
             anchors: ['home', 'about', 'stack', 'projects', 'contact'],
             scrollingSpeed: 800,
-            responsiveWidth: 768,
+            responsiveWidth: FULLPAGE_BREAKPOINT,
             onLeave: (_, destination) => updateIndicator(destination.index)
         };
 
@@ -778,8 +810,8 @@
         };
 
         const handleFullpageMode = () => {
-            const isMobile = window.innerWidth < 768;
-            if (isMobile) {
+            const isDesktop = window.innerWidth >= FULLPAGE_BREAKPOINT;
+            if (!isDesktop) {
                 disableFullpage();
                 document.body.classList.add('fp-responsive');
             } else {
@@ -814,7 +846,8 @@
         const cursor = document.getElementById('cursor');
         if (window.matchMedia('(pointer: fine)').matches) {
             document.addEventListener('mousemove', e => {
-                cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
             });
             document.querySelectorAll('a, button, input, textarea').forEach(el => {
                 el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
