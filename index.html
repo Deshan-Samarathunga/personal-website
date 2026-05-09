@@ -3,893 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- FullPage.js CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.22/fullpage.min.css" />
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
-
-        :root {
-            --deep-navy: #030610;
-            --wire-blue: #1c3d8c;
-            --accent-yellow: #ffd700;
-            --accent-cyan: #00f3ff;
-            --text-grey: #94a3b8;
-            --glass-bg: rgba(10, 25, 45, 0.65);
-            --glass-border: rgba(100, 200, 255, 0.1);
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Rajdhani', sans-serif;
-            background-color: var(--deep-navy);
-            color: white;
-            cursor: none;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        .form-field {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            padding: 0.85rem 1rem;
-            color: white;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .form-field::placeholder {
-            color: rgba(148, 163, 184, 0.5);
-        }
-        .form-field:focus {
-            border-color: var(--accent-yellow);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
-            outline: none;
-        }
-        textarea.form-field {
-            min-height: 160px;
-            resize: none;
-        }
-
-        .anchor-offset {
-            position: relative;
-            top: -80px;
-            display: block;
-            height: 0;
-        }
-        @media (max-width: 768px) {
-            .anchor-offset { top: -60px; }
-        }
-
-        /* Re-enable default cursor/scroll for mobile */
-        body.fp-responsive {
-            overflow: auto !important;
-            cursor: auto !important;
-        }
-
-        .force-custom-cursor, a, button, input, textarea, select, .btn-enter, #menu-trigger, .overlay-links li, [data-target], .glass-panel {
-            cursor: none !important;
-        }
-
-        @media (hover: none), (pointer: coarse) {
-            body, .force-custom-cursor, a, button, input, textarea, select, .btn-enter, #menu-trigger, .overlay-links li, [data-target], .glass-panel {
-                cursor: auto !important;
-            }
-            #cursor { display: none; }
-        }
-
-        /* --- Custom Cursor --- */
-        .cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 52px;
-            height: 52px;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            will-change: transform;
-            transform: translate(-50%, -50%);
-        }
-        .cursor-ring {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 42px; height: 42px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.15s ease-out;
-        }
-        .cursor-core {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 6px; height: 6px;
-            background: var(--accent-yellow);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px var(--accent-yellow);
-        }
-        .cursor.hover .cursor-ring {
-            width: 60px; height: 60px;
-            border-color: var(--accent-cyan);
-            border-width: 2px;
-            opacity: 0.8;
-        }
-        .cursor.click .cursor-ring {
-            width: 30px; height: 30px;
-            opacity: 0.5;
-        }
-
-        /* --- Background & Overlay --- */
-        #canvas-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
-        }
-        .digital-noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h10v10H10V10zM50 50h20v5H50v-5z' fill='%231c3d8c' fill-opacity='0.03'/%3E%3C/svg%3E");
-            z-index: -1; pointer-events: none; opacity: 0.4;
-        }
-        /* Vignette for focus */
-        .vignette {
-            position: fixed; inset: 0; pointer-events: none; z-index: -1;
-            background: radial-gradient(circle at center, transparent 20%, #00020a 100%);
-        }
-
-        /* --- Typography & Glows --- */
-        .font-mono { font-family: 'Space Mono', monospace; }
-        
-        .glow-text {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-        }
-        .glow-accent {
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-        }
-
-        /* --- UI Components --- */
-        /* Glass Panel Upgrade */
-        .glass-panel {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        /* Tech corners */
-        .glass-panel::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 10px;
-            border-top: 2px solid var(--glass-border); border-left: 2px solid var(--glass-border);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-        .glass-panel::after {
-            content: ''; position: absolute; bottom: 0; right: 0; width: 10px; height: 10px;
-            border-bottom: 2px solid var(--glass-border); border-right: 2px solid var(--glass-border);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-        .glass-panel:hover {
-            transform: translateY(-4px);
-            border-color: rgba(255, 215, 0, 0.3);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-        }
-        .glass-panel:hover::before, .glass-panel:hover::after {
-            width: 100%; height: 100%;
-            border-color: var(--accent-yellow);
-            opacity: 0.1;
-        }
-
-        /* Buttons */
-        .btn-enter {
-            background: transparent;
-            color: var(--accent-yellow);
-            font-family: 'Space Mono', monospace;
-            font-weight: bold;
-            padding: 12px 32px;
-            border: 1px solid var(--accent-yellow);
-            position: relative;
-            transition: all 0.3s ease;
-            letter-spacing: 2px;
-            font-size: 0.85rem;
-            overflow: hidden;
-            z-index: 1;
-        }
-        .btn-enter::before {
-            content: '';
-            position: absolute; top: 0; left: 0; width: 0%; height: 100%;
-            background: var(--accent-yellow);
-            transition: width 0.3s ease;
-            z-index: -1;
-        }
-        .btn-enter:hover { color: #000; }
-        .btn-enter:hover::before { width: 100%; }
-
-        /* Section Titles */
-        .section-title { 
-            font-size: 3rem; 
-            line-height: 1; 
-            letter-spacing: 0.05em; 
-            font-weight: 700; 
-            color: white; 
-            margin-bottom: 1rem;
-        }
-        @media (min-width: 768px) { .section-title { font-size: 5rem; letter-spacing: 0.1em; } }
-        
-        .section-subtitle {
-            font-family: 'Space Mono', monospace;
-            color: var(--text-grey);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            max-width: 600px;
-        }
-
-        /* --- FullPage Overrides --- */
-        #fullpage, .section {
-            min-height: 100vh;
-        }
-        .section { background: transparent; }
-
-        #section-hero {
-            display: flex;
-            align-items: center;
-        }
-        @media (max-width: 992px) {
-            #section-hero {
-                padding-top: 4rem;
-                padding-bottom: 4rem;
-            }
-        }
-        @media (max-width: 640px) {
-            #section-hero .container {
-                min-height: 100vh;
-                display: flex;
-                align-items: flex-end;
-                padding-bottom: 5rem;
-            }
-            .hero-content {
-                margin-top: 0;
-                margin-bottom: 2rem;
-            }
-        }
-        @media (max-width: 480px) {
-            .hero-content {
-                margin-bottom: 3rem;
-            }
-        }
-        .section:not(#section-hero) .fp-overflow {
-            background-color: rgba(3, 6, 16, 0.85); /* Darker backing for readability */
-            backdrop-filter: blur(8px);
-        }
-        
-        /* Animations */
-        .animate-up {
-            opacity: 1;
-            transform: none;
-        }
-        .delay-100 { transition-delay: 0.1s; }
-        .delay-200 { transition-delay: 0.2s; }
-        .delay-300 { transition-delay: 0.3s; }
-
-        /* --- Menu & Overlay --- */
-        #menu-trigger { z-index: 80; }
-        .overlay-menu {
-            position: fixed; inset: 0;
-            background: rgba(2, 4, 10, 0.98);
-            z-index: 60;
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 4rem;
-            opacity: 0; pointer-events: none;
-            transition: all 0.5s ease;
-        }
-        .overlay-menu.active { opacity: 1; pointer-events: auto; }
-        .overlay-links li {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 1.5rem 0;
-            opacity: 0; transform: translateY(20px);
-            transition: all 0.4s ease;
-        }
-        .overlay-menu.active .overlay-links li { opacity: 1; transform: translateY(0); }
-        /* Staggered menu entry */
-        .overlay-menu.active li:nth-child(1) { transition-delay: 0.1s; }
-        .overlay-menu.active li:nth-child(2) { transition-delay: 0.2s; }
-        .overlay-menu.active li:nth-child(3) { transition-delay: 0.3s; }
-        .overlay-menu.active li:nth-child(4) { transition-delay: 0.4s; }
-
-        .overlay-title { font-size: 2rem; font-weight: 600; letter-spacing: 0.1em; }
-        .overlay-number { font-family: 'Space Mono'; color: var(--accent-yellow); }
-
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: fixed; right: 3rem; top: 50%; transform: translateY(-50%);
-            z-index: 30; color: rgba(255,255,255,0.5);
-        }
-        .indicator-line {
-            width: 2px; height: 80px; background: rgba(255,255,255,0.1);
-            margin: 1rem auto; position: relative; overflow: hidden;
-        }
-        .indicator-line-fill {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--accent-yellow); transform: translateY(-100%);
-            transition: transform 0.3s ease;
-            box-shadow: 0 0 10px var(--accent-yellow);
-        }
-        @media (max-width: 768px) { .scroll-indicator { display: none; } }
-
-        /* Preloader */
-        .preloader {
-            position: fixed; inset: 0; background: #000; z-index: 100;
-            display: flex; justify-content: center; align-items: center;
-            transition: transform 0.6s ease-in-out;
-        }
-        .preloader-complete { transform: translateY(-100%); }
-        .preloader-bar { 
-            width: 200px; height: 2px; background: #333; margin-top: 1rem; position: relative; 
-        }
-        .preloader-fill {
-            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
-            background: var(--accent-yellow); transition: width 0.1s linear;
-        }
-    </style>
+    <meta name="description" content="A4 portfolio document for Deshan Samarathunga.">
+    <title>Deshan Samarathunga | Portfolio</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
-<body class="is-preloading">
-
-    <!-- 3D Canvas -->
-    <div id="canvas-container"></div>
-    <div class="digital-noise"></div>
-    <div class="vignette"></div>
-
-    <!-- Preloader -->
-    <div id="preloader" class="preloader">
-        <div class="text-center">
-            <div class="font-mono text-xs tracking-widest text-yellow-500 mb-2">> SYSTEM BOOT</div>
-            <div class="text-4xl font-bold tracking-wider text-white animate-pulse">INITIALIZING</div>
-            <div class="preloader-bar"><div id="preloader-fill" class="preloader-fill"></div></div>
-        </div>
-    </div>
-
-    <!-- Custom Cursor -->
-    <div id="cursor" class="cursor">
-        <div class="cursor-ring"></div>
-        <div class="cursor-core"></div>
-    </div>
-
-    <!-- Logo & Nav Trigger -->
-    <header class="fixed top-6 left-6 right-6 flex items-center justify-between z-50">
-        <div class="flex items-center gap-3 text-sm font-bold tracking-[0.3em] uppercase">
-            <div class="w-8 h-8 border border-yellow-400 flex items-center justify-center">
-                <div class="w-3 h-3 bg-yellow-400"></div>
-            </div>
-            <span>DEV.STUDENT</span>
-        </div>
-        <div id="menu-trigger" class="cursor-pointer group flex items-center gap-4 mix-blend-difference">
-            <span id="menu-text" class="hidden md:block text-xs font-mono text-white group-hover:text-yellow-400 transition-colors tracking-widest">MENU</span>
-            <div class="flex flex-col justify-center items-end space-y-1.5 w-8 h-6">
-                <div id="line-1" class="w-8 h-0.5 bg-white group-hover:bg-yellow-400 transition-all duration-300"></div>
-                <div id="line-2" class="w-5 h-0.5 bg-white group-hover:bg-yellow-400 transition-all duration-300"></div>
-            </div>
-        </div>
+<body>
+    <header class="action-bar" data-no-export>
+        <a class="action-brand" href="#cover" aria-label="Go to cover">
+            <span>DS</span>
+            <strong>Portfolio 2026</strong>
+        </a>
+        <nav class="action-links" aria-label="Quick links">
+            <a href="mailto:deshansamarathunga.net@gmail.com">Email</a>
+            <a href="tel:+94778688875">Phone</a>
+            <a href="https://github.com/Deshan-Samarathunga" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/ndeshan-samarathunga/" target="_blank" rel="noreferrer">LinkedIn</a>
+        </nav>
+        <button class="download-button" id="download-pdf" type="button">Download PDF</button>
     </header>
 
-    <!-- Scroll Indicator -->
-    <aside class="scroll-indicator hidden md:block">
-        <div class="text-center font-mono text-xs">
-            <span id="indicatorCurrent">00</span>
-            <div class="indicator-line">
-                <div class="indicator-line-fill" id="scrollProgressFill"></div>
-            </div>
-            <span id="indicatorTotal">04</span>
-        </div>
-    </aside>
-
-    <!-- Overlay Menu -->
-    <div id="overlay-menu" class="overlay-menu">
-        <ul class="overlay-links max-w-4xl mx-auto w-full">
-            <li data-menuanchor="home"><a href="#home" class="flex justify-between items-center hover:text-yellow-400 transition-colors"><span class="overlay-title">HOME</span><span class="overlay-number">00</span></a></li>
-            <li data-menuanchor="about"><a href="#about" class="flex justify-between items-center hover:text-yellow-400 transition-colors"><span class="overlay-title">PROFILE</span><span class="overlay-number">01</span></a></li>
-            <li data-menuanchor="stack"><a href="#stack" class="flex justify-between items-center hover:text-yellow-400 transition-colors"><span class="overlay-title">STACK</span><span class="overlay-number">02</span></a></li>
-            <li data-menuanchor="projects"><a href="#projects" class="flex justify-between items-center hover:text-yellow-400 transition-colors"><span class="overlay-title">WORK</span><span class="overlay-number">03</span></a></li>
-            <li data-menuanchor="contact"><a href="#contact" class="flex justify-between items-center hover:text-yellow-400 transition-colors"><span class="overlay-title">CONTACT</span><span class="overlay-number">04</span></a></li>
-        </ul>
-    </div>
-
-    <!-- FullPage Content -->
-    <div id="fullpage">
-        
-        <!-- Hero -->
-        <span id="home" class="anchor-offset"></span>
-        <div class="section" id="section-hero">
-            <div class="container mx-auto px-6 md:px-12 h-full flex items-center">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full">
-                    <div class="hidden lg:block"></div> <!-- Spacer -->
-                    <div class="animate-up delay-100 hero-content">
-                        <div class="flex items-center space-x-4 mb-6 font-mono text-xs text-yellow-400">
-                            <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-                            <span>SYSTEM STATUS: ONLINE</span>
-                        </div>
-                        <h1 class="section-title glow-text mb-6">
-                            FULL STACK<br>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">ENGINEER</span>
-                        </h1>
-                        <p class="section-subtitle mb-10 text-lg">
-                            Crafting resilient digital architecture with a focus on clean code and immersive user experiences. Based in Sri Lanka.
-                        </p>
-                        <a href="#projects" class="btn-enter inline-block">VIEW SELECTED WORKS</a>
-                    </div>
+    <main class="document-stage">
+        <div class="portfolio-document" id="portfolio">
+            <section class="pdf-page cover-page" id="cover">
+                <div class="cover-band top-band"></div>
+                <div class="cover-name">DESHAN SAMARATHUNGA | 2026</div>
+                <div class="cover-fill">
+                    <h1>PORTFOLIO</h1>
                 </div>
-            </div>
-        </div>
-
-        <!-- About -->
-    <span id="about" class="anchor-offset"></span>
-        <div class="section" id="section-about">
-            <div class="content-container mx-auto px-6 md:px-12 max-w-6xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                    <div class="animate-up">
-                        <div class="font-mono text-yellow-400 text-sm mb-4 tracking-widest">01 / IDENTITY</div>
-                        <h2 class="section-title glow-text">ABOUT ME</h2>
-                        <div class="h-1 w-24 bg-gradient-to-r from-yellow-400 to-transparent mb-8"></div>
-                    </div>
-                    <div class="glass-panel p-8 md:p-10 animate-up delay-200">
-                        <p class="font-mono text-gray-300 text-sm leading-relaxed mb-6">
-                            <span class="text-yellow-400">> ORIGIN:</span> SLIIT Undergraduate (Software Engineering).<br>
-                            <span class="text-yellow-400">> FOCUS:</span> Scalable Systems & Interactive UIs.<br>
-                        </p>
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            I bridge the gap between functional back-end logic and polished front-end aesthetics. 
-                            My approach is rooted in the belief that code should be as clean as the design it powers.
-                            Currently exploring <span class="text-white border-b border-yellow-500/50">Microservices</span> and <span class="text-white border-b border-yellow-500/50">WebGL</span>.
-                        </p>
-                        <div class="flex gap-4 text-xs font-mono text-blue-300">
-                            <div class="border border-blue-900/50 px-3 py-1 rounded bg-blue-900/10">PROBLEM SOLVER</div>
-                            <div class="border border-blue-900/50 px-3 py-1 rounded bg-blue-900/10">FAST LEARNER</div>
-                        </div>
-                    </div>
+                <div class="cover-contact">
+                    <span>deshansamarathunga.net@gmail.com</span>
+                    <span class="divider">|</span>
+                    <span>+9477-8688-875</span>
                 </div>
-            </div>
-        </div>
-
-        <!-- Stack -->
-    <span id="stack" class="anchor-offset"></span>
-        <div class="section" id="section-stack">
-            <div class="content-container mx-auto px-6 md:px-12 max-w-7xl">
-                <div class="mb-12 animate-up">
-                    <div class="font-mono text-yellow-400 text-sm mb-4 tracking-widest">02 / ARSENAL</div>
-                    <h2 class="section-title glow-text">TECH STACK</h2>
+                <div class="cover-social">
+                    <span>github.com/Deshan-Samarathunga</span>
+                    <span class="divider">|</span>
+                    <span>linkedin.com/in/ndeshan-samarathunga</span>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Skill Cards -->
-                    <div class="glass-panel p-6 animate-up delay-100 group">
-                        <div class="flex justify-between items-end mb-4">
-                            <h3 class="text-xl font-bold group-hover:text-yellow-400 transition-colors">JavaScript (ES6+)</h3>
-                            <span class="font-mono text-xs text-gray-500">CORE</span>
-                        </div>
-                        <div class="w-full bg-gray-800 h-1 mt-2"><div class="bg-yellow-400 h-1 w-[90%] shadow-[0_0_10px_#ffd700]"></div></div>
-                    </div>
-                    
-                    <div class="glass-panel p-6 animate-up delay-100 group">
-                        <div class="flex justify-between items-end mb-4">
-                            <h3 class="text-xl font-bold group-hover:text-cyan-400 transition-colors">React / Next.js</h3>
-                            <span class="font-mono text-xs text-gray-500">FRONTEND</span>
-                        </div>
-                        <div class="w-full bg-gray-800 h-1 mt-2"><div class="bg-cyan-400 h-1 w-[85%] shadow-[0_0_10px_#00f3ff]"></div></div>
-                    </div>
+            </section>
 
-                    <div class="glass-panel p-6 animate-up delay-200 group">
-                        <div class="flex justify-between items-end mb-4">
-                            <h3 class="text-xl font-bold group-hover:text-green-400 transition-colors">Node.js</h3>
-                            <span class="font-mono text-xs text-gray-500">BACKEND</span>
-                        </div>
-                        <div class="w-full bg-gray-800 h-1 mt-2"><div class="bg-green-500 h-1 w-[80%]"></div></div>
-                    </div>
-
-                    <div class="glass-panel p-6 animate-up delay-200 group">
-                        <div class="flex justify-between items-end mb-4">
-                            <h3 class="text-xl font-bold group-hover:text-orange-400 transition-colors">Java / Spring</h3>
-                            <span class="font-mono text-xs text-gray-500">ENTERPRISE</span>
-                        </div>
-                        <div class="w-full bg-gray-800 h-1 mt-2"><div class="bg-orange-500 h-1 w-[75%]"></div></div>
-                    </div>
-
-                    <div class="glass-panel p-6 animate-up delay-300 group">
-                        <div class="flex justify-between items-end mb-4">
-                            <h3 class="text-xl font-bold group-hover:text-purple-400 transition-colors">Python</h3>
-                            <span class="font-mono text-xs text-gray-500">AI/ML</span>
-                        </div>
-                        <div class="w-full bg-gray-800 h-1 mt-2"><div class="bg-purple-500 h-1 w-[70%]"></div></div>
-                    </div>
-
-                    <div class="glass-panel p-6 animate-up delay-300 group">
-                        <div class="flex justify-between items-end mb-4">
-                            <h3 class="text-xl font-bold group-hover:text-blue-400 transition-colors">SQL / NoSQL</h3>
-                            <span class="font-mono text-xs text-gray-500">DATA</span>
-                        </div>
-                        <div class="w-full bg-gray-800 h-1 mt-2"><div class="bg-blue-500 h-1 w-[80%]"></div></div>
-                    </div>
+            <section class="pdf-page contents-page">
+                <div class="page-rule page-rule-top"></div>
+                <h2 class="contents-title">Contents</h2>
+                <div class="contents-list">
+                    <a href="#intro" class="contents-row">
+                        <span class="contents-number">01</span>
+                        <span class="contents-label">INTRODUCTION TO MYSELF</span>
+                    </a>
+                    <a href="#journal-one" class="contents-row">
+                        <span class="contents-number">02</span>
+                        <span class="contents-label">REFLECTIVE JOURNAL</span>
+                    </a>
+                    <a href="#career" class="contents-row">
+                        <span class="contents-number">03</span>
+                        <span class="contents-label">CAREER DEVELOPMENT PLAN</span>
+                    </a>
+                    <a href="#cv" class="contents-row">
+                        <span class="contents-number">04</span>
+                        <span class="contents-label">CURRICULUM VITAE</span>
+                    </a>
+                    <a href="#certifications" class="contents-row">
+                        <span class="contents-number">05</span>
+                        <span class="contents-label">CERTIFICATIONS</span>
+                    </a>
+                    <a href="#contact" class="contents-row">
+                        <span class="contents-number">06</span>
+                        <span class="contents-label">CONTACT</span>
+                    </a>
                 </div>
-            </div>
-        </div>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 01</span>
+                </footer>
+            </section>
 
-        <!-- Projects -->
-    <span id="projects" class="anchor-offset"></span>
-        <div class="section" id="section-projects">
-            <div class="content-container mx-auto px-6 md:px-12 max-w-7xl">
-                <div class="mb-12 animate-up">
-                    <div class="font-mono text-yellow-400 text-sm mb-4 tracking-widest">03 / EXECUTIONS</div>
-                    <h2 class="section-title glow-text">PROJECTS</h2>
+            <section class="pdf-page body-page" id="intro">
+                <header class="page-title"><span>01</span><strong>| INTRODUCTION TO MYSELF</strong></header>
+                <article class="text-block">
+                    <h3>Who I Am</h3>
+                    <p>Hello! I am Deshan Samarathunga, a motivated software engineering undergraduate who is building a strong foundation in modern software development. I am interested in creating useful digital products, learning practical engineering habits, and improving my ability to solve real problems through technology.</p>
+                    <p>I enjoy working across both design and logic. My current focus is on web development, clean user interfaces, database-backed applications, and understanding how reliable systems are planned, built, and maintained.</p>
+                </article>
+                <article class="text-block">
+                    <h3>Passion &amp; Mindset</h3>
+                    <p>I believe continuous learning, adaptability, and curiosity are essential qualities in the technology industry. I enjoy exploring new tools, improving my technical knowledge, and taking on challenges that help me grow both personally and professionally.</p>
+                    <p>I also value teamwork and communication. Working with others helps me exchange ideas, understand different perspectives, and contribute to better solutions.</p>
+                </article>
+                <article class="text-block">
+                    <h3>Personal Values &amp; Aspirations</h3>
+                    <p>Beyond technical knowledge, I value discipline, creativity, responsibility, and steady self-improvement. My aspiration is to become a reliable software engineer who contributes positively to the industry by building user-focused and impactful software solutions.</p>
+                </article>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 02</span>
+                </footer>
+            </section>
+
+            <section class="pdf-page body-page" id="journal-one">
+                <header class="page-title"><span>02</span><strong>| REFLECTIVE JOURNAL</strong></header>
+                <article class="text-block compact">
+                    <h3>Professional Identity</h3>
+                    <p>Developing a professional identity has helped me understand that technical ability and personal presentation should grow together. A clear portfolio, a well-maintained GitHub profile, and an active LinkedIn presence can show progress, credibility, and readiness for opportunities.</p>
+                </article>
+                <article class="text-block compact">
+                    <h3>Presentation &amp; Communication Skills</h3>
+                    <p>Effective communication is important for interviews, project demonstrations, client discussions, and teamwork. I am learning to present ideas clearly, structure information, and explain technical work in a way that is easy for others to understand.</p>
+                </article>
+                <article class="text-block compact">
+                    <h3>Formal Writing</h3>
+                    <p>Business letters, emails, reports, and professional documents require accuracy, structure, and a respectful tone. Improving these skills will support my future career by helping me communicate with confidence and professionalism.</p>
+                </article>
+                <article class="text-block compact">
+                    <h3>Online Career Presence</h3>
+                    <p>LinkedIn and GitHub are important career tools for software engineering students. I plan to keep improving these profiles by adding projects, updating skills, and documenting my learning journey.</p>
+                </article>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 03</span>
+                </footer>
+            </section>
+
+            <section class="pdf-page body-page" id="journal-two">
+                <header class="page-title"><span>02</span><strong>| REFLECTIVE JOURNAL</strong></header>
+                <article class="text-block compact">
+                    <h3>Report Writing &amp; Documentation</h3>
+                    <p>Good documentation is a valuable engineering habit. I am learning to write reports that are objective, organized, and useful for readers. This skill is important for academic work, final-year projects, and future software documentation.</p>
+                </article>
+                <article class="text-block compact">
+                    <h3>Teamwork &amp; Leadership</h3>
+                    <p>Team projects have shown me that successful software work depends on planning, communication, responsibility, and trust. I want to continue improving how I share ideas, listen to others, and support group progress.</p>
+                </article>
+                <article class="text-block compact">
+                    <h3>Technical Growth</h3>
+                    <p>My technical development is an ongoing process. I am strengthening my understanding of web technologies, programming concepts, databases, GitHub workflows, and deployment fundamentals through consistent practice.</p>
+                </article>
+                <article class="text-block compact">
+                    <h3>Overall Reflection</h3>
+                    <p>The biggest lesson from my learning journey is that software engineering requires both technical competence and professional maturity. My goal is to keep building both sides with patience, discipline, and curiosity.</p>
+                </article>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 04</span>
+                </footer>
+            </section>
+
+            <section class="pdf-page body-page" id="career">
+                <header class="page-title"><span>03</span><strong>| CAREER DEVELOPMENT PLAN</strong></header>
+                <div class="plan-grid">
+                    <article class="plan-card">
+                        <span>SHORT TERM</span>
+                        <h3>Build Strong Foundations</h3>
+                        <p>Complete academic requirements successfully, improve portfolio projects, strengthen HTML, CSS, JavaScript, database, and backend fundamentals, and prepare for internship opportunities.</p>
+                    </article>
+                    <article class="plan-card">
+                        <span>MID TERM</span>
+                        <h3>Gain Industry Experience</h3>
+                        <p>Join a software engineering internship or junior role, contribute to real products, learn team workflows, and improve code quality, testing, communication, and delivery skills.</p>
+                    </article>
+                    <article class="plan-card">
+                        <span>LONG TERM</span>
+                        <h3>Become a Reliable Engineer</h3>
+                        <p>Grow into a skilled software engineer who can design maintainable systems, mentor others, contribute to meaningful products, and continue learning modern technologies.</p>
+                    </article>
                 </div>
+                <div class="milestone-strip">
+                    <div><strong>01</strong><span>Portfolio polish</span></div>
+                    <div><strong>02</strong><span>Project repositories</span></div>
+                    <div><strong>03</strong><span>Internship readiness</span></div>
+                    <div><strong>04</strong><span>Professional growth</span></div>
+                </div>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 05</span>
+                </footer>
+            </section>
 
-                <div class="grid gap-6">
-                    <!-- Project 1 -->
-                    <div class="glass-panel p-8 animate-up delay-100 group hover:border-yellow-500/50 transition-all">
-                        <div class="flex flex-col md:flex-row justify-between md:items-center mb-4">
-                            <h3 class="text-2xl font-bold tracking-wide text-white group-hover:text-yellow-400 transition-colors">E-COMMERCE ENGINE</h3>
-                            <div class="flex gap-2 mt-2 md:mt-0">
-                                <span class="text-[10px] font-mono border border-gray-600 px-2 py-1 text-gray-400">MERN</span>
-                                <span class="text-[10px] font-mono border border-yellow-500/30 px-2 py-1 text-yellow-400 bg-yellow-500/10">LIVE</span>
+            <section class="pdf-page body-page" id="cv">
+                <header class="page-title"><span>04</span><strong>| CURRICULUM VITAE</strong></header>
+                <div class="cv-grid">
+                    <aside class="cv-sidebar">
+                        <h3>Deshan Samarathunga</h3>
+                        <p>Software Engineering Undergraduate</p>
+                        <ul class="contact-list">
+                            <li>deshansamarathunga.net@gmail.com</li>
+                            <li>+9477-8688-875</li>
+                            <li>github.com/Deshan-Samarathunga</li>
+                            <li>linkedin.com/in/ndeshan-samarathunga</li>
+                        </ul>
+                    </aside>
+                    <div class="cv-main">
+                        <article>
+                            <h3>Profile</h3>
+                            <p>A motivated student developer focused on practical web development, clean interfaces, steady learning, and reliable project delivery.</p>
+                        </article>
+                        <article>
+                            <h3>Technical Skills</h3>
+                            <div class="pill-row">
+                                <span>HTML</span><span>CSS</span><span>JavaScript</span><span>GitHub</span><span>Databases</span><span>Responsive UI</span>
                             </div>
-                        </div>
-                        <p class="text-gray-400 text-sm max-w-3xl mb-6">
-                            Secure, scalable online marketplace featuring real-time inventory management, Stripe integration, and a responsive dashboard for admins.
-                        </p>
-                        <div class="flex items-center gap-4 text-sm font-mono text-blue-300">
-                            <a href="#" class="hover:text-white flex items-center gap-2">VIEW REPO <span>↗</span></a>
-                            <a href="#" class="hover:text-white flex items-center gap-2">DEMO <span>↗</span></a>
-                        </div>
-                    </div>
-
-                    <!-- Project 2 -->
-                    <div class="glass-panel p-8 animate-up delay-200 group hover:border-cyan-500/50 transition-all">
-                        <div class="flex flex-col md:flex-row justify-between md:items-center mb-4">
-                            <h3 class="text-2xl font-bold tracking-wide text-white group-hover:text-cyan-400 transition-colors">AI SCHEDULER</h3>
-                            <div class="flex gap-2 mt-2 md:mt-0">
-                                <span class="text-[10px] font-mono border border-gray-600 px-2 py-1 text-gray-400">PYTHON</span>
-                                <span class="text-[10px] font-mono border border-blue-500/30 px-2 py-1 text-blue-400 bg-blue-500/10">BETA</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-400 text-sm max-w-3xl mb-6">
-                            NLP-powered productivity tool. Parses natural language input into structured calendar events, prioritizing tasks using a custom algorithm.
-                        </p>
-                         <div class="flex items-center gap-4 text-sm font-mono text-blue-300">
-                            <a href="#" class="hover:text-white flex items-center gap-2">VIEW REPO <span>↗</span></a>
-                        </div>
+                        </article>
+                        <article>
+                            <h3>Education</h3>
+                            <p>Software engineering undergraduate. Add university, degree title, year, achievements, and academic highlights here.</p>
+                        </article>
+                        <article>
+                            <h3>Project Highlights</h3>
+                            <p><strong>Portfolio Website:</strong> A structured personal portfolio with downloadable PDF output.</p>
+                            <p><strong>Academic Project:</strong> Add a project title, technology stack, role, and outcome here.</p>
+                        </article>
                     </div>
                 </div>
-            </div>
-        </div>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 06</span>
+                </footer>
+            </section>
 
-        <!-- Contact -->
-    <span id="contact" class="anchor-offset"></span>
-        <div class="section" id="section-contact">
-            <div class="content-container mx-auto px-6 md:px-12 max-w-5xl">
-                <div class="glass-panel p-10 md:p-16 animate-up">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        <div>
-                            <div class="font-mono text-yellow-400 text-xs tracking-widest mb-6">04 / TRANSMISSION</div>
-                            <h2 class="text-4xl md:text-5xl font-bold mb-6">INITIALIZE<br>CONTACT.</h2>
-                            <p class="text-gray-400 mb-8 font-mono text-sm leading-relaxed">
-                                Currently open for internships and collaborative projects. Drop a signal and I'll respond within 24 hours.
-                            </p>
-                            <a href="mailto:student@sliit.lk" class="text-2xl font-mono hover:text-yellow-400 transition-colors border-b border-gray-700 pb-1 inline-block">student@sliit.lk</a>
-                            
-                            <div class="mt-12 flex gap-6 text-sm font-mono text-gray-500">
-                                <a href="#" class="hover:text-white">LINKEDIN</a>
-                                <a href="#" class="hover:text-white">GITHUB</a>
-                                <a href="#" class="hover:text-white">TWITTER</a>
-                            </div>
-                        </div>
-
-                        <form class="space-y-6">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="relative group">
-                                    <input type="text" placeholder="NAME" class="form-field">
-                                </div>
-                                <div class="relative group">
-                                    <input type="email" placeholder="EMAIL" class="form-field">
-                                </div>
-                            </div>
-                            <div class="relative group">
-                                <textarea rows="4" placeholder="MESSAGE DATA..." class="form-field"></textarea>
-                            </div>
-                            <button type="submit" class="btn-enter w-full mt-4">TRANSMIT</button>
-                        </form>
-                    </div>
+            <section class="pdf-page body-page" id="certifications">
+                <header class="page-title"><span>05</span><strong>| CERTIFICATIONS</strong></header>
+                <div class="cert-grid">
+                    <article class="cert-card">
+                        <span>Certificate 01</span>
+                        <h3>Professional Development</h3>
+                        <p>Add certificate name, issuing organization, date, and a short note about what was learned.</p>
+                    </article>
+                    <article class="cert-card">
+                        <span>Certificate 02</span>
+                        <h3>Web Development</h3>
+                        <p>Add technical course or workshop details related to frontend, backend, databases, or software tools.</p>
+                    </article>
+                    <article class="cert-card">
+                        <span>Certificate 03</span>
+                        <h3>Cloud / Tools</h3>
+                        <p>Add Azure, GitHub, cloud fundamentals, or productivity certification details when available.</p>
+                    </article>
+                    <article class="cert-card">
+                        <span>Certificate 04</span>
+                        <h3>Academic Achievement</h3>
+                        <p>Add university, competition, participation, or project recognition details here.</p>
+                    </article>
                 </div>
-            </div>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 07</span>
+                </footer>
+            </section>
+
+            <section class="pdf-page body-page contact-page" id="contact">
+                <header class="page-title"><span>06</span><strong>| CONTACT</strong></header>
+                <div class="contact-hero">
+                    <h2>Let's Connect</h2>
+                    <p>I am open to internship opportunities, collaborative software projects, and professional feedback on my learning journey.</p>
+                </div>
+                <div class="contact-table">
+                    <a href="mailto:deshansamarathunga.net@gmail.com">
+                        <span>Email</span>
+                        <strong>deshansamarathunga.net@gmail.com</strong>
+                    </a>
+                    <a href="tel:+94778688875">
+                        <span>Phone</span>
+                        <strong>+9477-8688-875</strong>
+                    </a>
+                    <a href="https://github.com/Deshan-Samarathunga" target="_blank" rel="noreferrer">
+                        <span>GitHub</span>
+                        <strong>github.com/Deshan-Samarathunga</strong>
+                    </a>
+                    <a href="https://www.linkedin.com/in/ndeshan-samarathunga/" target="_blank" rel="noreferrer">
+                        <span>LinkedIn</span>
+                        <strong>linkedin.com/in/ndeshan-samarathunga</strong>
+                    </a>
+                </div>
+                <footer class="page-footer">
+                    <span>Deshan Samarathunga | 2026</span>
+                    <span>Page 08</span>
+                </footer>
+            </section>
         </div>
+    </main>
 
-    </div>
-
-    <!-- FullPage JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.22/fullpage.min.js"></script>
-
-    <script>
-        // --- PRELOADER ---
-        window.addEventListener('load', () => {
-            const fill = document.getElementById('preloader-fill');
-            if(fill) fill.style.width = '100%';
-            setTimeout(() => {
-                document.getElementById('preloader').classList.add('preloader-complete');
-                document.body.classList.remove('is-preloading');
-            }, 800);
-        });
-
-        // --- THREE.JS SETUP ---
-        const initThree = () => {
-            const container = document.getElementById('canvas-container');
-            if (!container) return;
-
-            const scene = new THREE.Scene();
-            // Dark fog for depth
-            scene.fog = new THREE.FogExp2(0x030610, 0.015);
-
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            
-            const updateSize = () => {
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            };
-            updateSize();
-            container.appendChild(renderer.domElement);
-
-            camera.position.set(0, 3, 20); // Lower angle
-            
-            // --- MATERIALS ---
-            const wireMat = new THREE.LineBasicMaterial({ color: 0x1c3d8c, opacity: 0.15, transparent: true });
-            const laptopMat = new THREE.LineBasicMaterial({ color: 0x3b82f6, opacity: 0.5, transparent: true });
-            const accentMat = new THREE.LineBasicMaterial({ color: 0xffd700, opacity: 0.8, transparent: true });
-
-            // --- 1. TERRAIN GRID ---
-            const terrainGroup = new THREE.Group();
-            const planeSize = 160;
-            const planeDivisions = 40;
-            
-            // Create two planes for infinite loop
-            for(let i=0; i<2; i++) {
-                const geo = new THREE.PlaneGeometry(planeSize, planeSize, planeDivisions, planeDivisions);
-                const pos = geo.attributes.position;
-                for(let j=0; j<pos.count; j++) {
-                    // Perlin-ish noise
-                    const x = pos.getX(j);
-                    const y = pos.getY(j);
-                    const z = Math.sin(x * 0.1) * Math.cos(y * 0.1) * 2;
-                    pos.setZ(j, z);
-                }
-                const mesh = new THREE.LineSegments(new THREE.WireframeGeometry(geo), wireMat);
-                mesh.rotation.x = -Math.PI / 2;
-                mesh.position.y = -5;
-                mesh.position.z = -i * planeSize;
-                terrainGroup.add(mesh);
-            }
-            scene.add(terrainGroup);
-
-            // --- 2. PARTICLES (DATA DUST) ---
-            const particlesGeo = new THREE.BufferGeometry();
-            const particlesCount = 400;
-            const posArray = new Float32Array(particlesCount * 3);
-
-            for(let i=0; i<particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 100; // Spread
-            }
-            particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const particlesMat = new THREE.PointsMaterial({
-                size: 0.15, color: 0x00f3ff, transparent: true, opacity: 0.6
-            });
-            const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
-            scene.add(particlesMesh);
-
-            // --- 3. LAPTOP MODEL ---
-            const laptopGroup = new THREE.Group();
-            
-            // Helper to build boxes
-            const createBoxFrame = (w, h, d, mat, x, y, z) => {
-                const geo = new THREE.BoxGeometry(w, h, d);
-                const edges = new THREE.EdgesGeometry(geo);
-                const lines = new THREE.LineSegments(edges, mat);
-                lines.position.set(x, y, z);
-                return lines;
-            };
-
-            // Base
-            laptopGroup.add(createBoxFrame(12, 0.5, 8, laptopMat, 0, 0, 0));
-            // Screen
-            const screenGroup = new THREE.Group();
-            screenGroup.position.set(0, 0.25, -4);
-            const lid = createBoxFrame(12, 0.2, 8, laptopMat, 0, 4, -0.1); // Initial pos relative to pivot
-            
-            // Add "Code" on screen
-            const screenCanvas = document.createElement('canvas');
-            screenCanvas.width = 512; screenCanvas.height = 320;
-            const ctx = screenCanvas.getContext('2d');
-            
-            const drawScreen = (time) => {
-                ctx.fillStyle = 'rgba(0, 10, 30, 0.9)';
-                ctx.fillRect(0,0, 512, 320);
-                ctx.font = '20px monospace';
-                ctx.fillStyle = '#00f3ff';
-                const lines = ['> INITIALIZING...', '> CONNECTED', '> SYSTEM: SECURE', 'await future();'];
-                lines.forEach((l, i) => {
-                    ctx.globalAlpha = Math.sin(time * 2 + i) * 0.5 + 0.5;
-                    ctx.fillText(l, 20, 40 + i * 30);
-                });
-                screenTex.needsUpdate = true;
-            };
-            const screenTex = new THREE.CanvasTexture(screenCanvas);
-            const screenPlane = new THREE.Mesh(
-                new THREE.PlaneGeometry(11, 7),
-                new THREE.MeshBasicMaterial({ map: screenTex, transparent: true, opacity: 0.9, side: THREE.DoubleSide })
-            );
-            screenPlane.rotation.x = Math.PI/2; // Lay flat initially
-            screenPlane.position.set(0, 0.15, 0); // Slightly above lid
-            
-            // Group lid parts
-            const lidPivot = new THREE.Group();
-            lidPivot.position.set(0, 0.25, -4);
-            lidPivot.add(createBoxFrame(12, 0.2, 8, laptopMat, 0, 0, -4)); // Visual geometry
-            
-            // Actually, easier approach for lid rotation:
-            const actualLid = new THREE.Group();
-            actualLid.position.set(0, 0.25, -4); // Hinge
-            const lidMesh = createBoxFrame(12, 0.2, 8, laptopMat, 0, 0, -4); // Offset geo
-            const screenMesh = screenPlane;
-            screenMesh.position.set(0, -0.1, -4);
-            screenMesh.rotation.x = -Math.PI/2; // Face front when open
-            
-            actualLid.add(lidMesh);
-            actualLid.add(screenMesh);
-            actualLid.rotation.x = Math.PI / 1.8; // Open
-            
-            laptopGroup.add(actualLid);
-            scene.add(laptopGroup);
-
-            // Mobile Adjustment
-            const handleResize = () => {
-                const isMobile = window.innerWidth < 768;
-                camera.position.z = isMobile ? 25 : 20;
-                laptopGroup.position.set(isMobile ? 0 : -5, isMobile ? 4 : 0.5, 0);
-                laptopGroup.scale.setScalar(isMobile ? 0.7 : 1);
-                
-                updateSize();
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-            };
-            window.addEventListener('resize', handleResize);
-            handleResize();
-
-            // Animation Loop
-            const clock = new THREE.Clock();
-            let mouseX = 0, mouseY = 0;
-            
-            document.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX - window.innerWidth/2) * 0.001;
-                mouseY = (e.clientY - window.innerHeight/2) * 0.001;
-            });
-
-            const animate = () => {
-                requestAnimationFrame(animate);
-                const t = clock.getElapsedTime();
-
-                // Terrain Flow
-                terrainGroup.children.forEach(mesh => {
-                    mesh.position.z += 0.05;
-                    if(mesh.position.z > planeSize) mesh.position.z -= planeSize * 2;
-                });
-
-                // Laptop Float
-                laptopGroup.position.y += Math.sin(t) * 0.002;
-                laptopGroup.rotation.y = Math.PI/8 + Math.sin(t * 0.5) * 0.1;
-                
-                // Particles drift
-                particlesMesh.rotation.y = t * 0.05;
-
-                // Screen Update
-                drawScreen(t);
-
-                // Camera Parallax
-                camera.rotation.x += (mouseY * 0.2 - camera.rotation.x) * 0.05;
-                camera.rotation.y += (mouseX * 0.2 - camera.rotation.y) * 0.05;
-
-                renderer.render(scene, camera);
-            };
-            animate();
-        };
-        
-        if(window.innerWidth > 10 || typeof THREE !== 'undefined') initThree();
-
-        const updateIndicator = (idx = 0) => {
-            const current = document.getElementById('indicatorCurrent');
-            const fill = document.getElementById('scrollProgressFill');
-            if (current) current.textContent = `0${idx}`;
-            if (fill) fill.style.transform = `translateY(-${100 - (idx * 25)}%)`;
-        };
-
-        const FULLPAGE_BREAKPOINT = 900;
-
-        const fullpageOptions = {
-            licenseKey: 'gplv3-license',
-            credits: { enabled: false },
-            menu: '#overlay-menu',
-            anchors: ['home', 'about', 'stack', 'projects', 'contact'],
-            scrollingSpeed: 800,
-            responsiveWidth: FULLPAGE_BREAKPOINT,
-            onLeave: (_, destination) => updateIndicator(destination.index)
-        };
-
-        let fullpageInstance = null;
-
-        const enableFullpage = () => {
-            fullpageInstance = new fullpage('#fullpage', fullpageOptions);
-            updateIndicator(0);
-        };
-
-        const disableFullpage = () => {
-            if (!fullpageInstance) return;
-            fullpageInstance.destroy('all');
-            fullpageInstance = null;
-            updateIndicator(0);
-        };
-
-        const handleFullpageMode = () => {
-            const isDesktop = window.innerWidth >= FULLPAGE_BREAKPOINT;
-            if (!isDesktop) {
-                disableFullpage();
-                document.body.classList.add('fp-responsive');
-            } else {
-                document.body.classList.remove('fp-responsive');
-                if (!fullpageInstance) enableFullpage();
-            }
-        };
-
-        const attachResponsiveHandler = () => {
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(handleFullpageMode, 200);
-            });
-        };
-
-        handleFullpageMode();
-        attachResponsiveHandler();
-
-        // --- MENU TOGGLE ---
-        const toggleMenu = () => {
-            document.getElementById('overlay-menu').classList.toggle('active');
-            const lines = document.querySelectorAll('#menu-trigger div div');
-            lines[0].classList.toggle('rotate-45');
-            lines[0].classList.toggle('translate-y-2'); // approximate
-            // Simple visual toggle handled better by CSS classes in real app
-        };
-        document.getElementById('menu-trigger').addEventListener('click', toggleMenu);
-        document.querySelectorAll('.overlay-links a').forEach(l => l.addEventListener('click', toggleMenu));
-
-        // --- CURSOR LOGIC ---
-        const cursor = document.getElementById('cursor');
-        if (window.matchMedia('(pointer: fine)').matches) {
-            document.addEventListener('mousemove', e => {
-                cursor.style.left = `${e.clientX}px`;
-                cursor.style.top = `${e.clientY}px`;
-            });
-            document.querySelectorAll('a, button, input, textarea').forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-            });
-            document.addEventListener('mousedown', () => cursor.classList.add('click'));
-            document.addEventListener('mouseup', () => cursor.classList.remove('click'));
-        } else {
-            cursor.style.display = 'none';
-        }
-
-    </script>
+    <div class="export-status" id="export-status" role="status" aria-live="polite" data-no-export></div>
 </body>
 </html>
