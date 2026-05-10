@@ -331,6 +331,12 @@ a {
     gap: 7mm;
 }
 
+.plan-grid {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+    gap: 5mm;
+}
+
 .plan-card,
 .cert-card {
     border: 0.35mm solid var(--slate-mid);
@@ -391,12 +397,12 @@ a {
 
 .cv-grid {
     display: grid;
-    grid-template-columns: 56mm 1fr;
-    gap: 8mm;
+    grid-template-columns: 49mm 1fr;
+    gap: 7mm;
 }
 
 .cv-sidebar {
-    min-height: 205mm;
+    min-height: 178mm;
     background: var(--navy);
     color: #fff;
     padding: 8mm 6mm;
@@ -427,12 +433,23 @@ a {
 
 .cv-main {
     display: grid;
-    gap: 6mm;
+    gap: 4mm;
 }
 
 .cv-main article {
     border-bottom: 0.35mm solid var(--slate-mid);
-    padding-bottom: 4mm;
+    padding-bottom: 3mm;
+}
+
+.cv-main p {
+    margin-bottom: 3mm;
+    font-size: 3.65mm;
+    line-height: 1.28;
+    text-align: left;
+}
+
+.cv-main h3 {
+    font-size: 4.8mm;
 }
 
 .pill-row {
@@ -707,6 +724,7 @@ a {
     }
 
     .cv-grid,
+    .plan-grid,
     .cert-grid,
     .milestone-strip,
     .contact-table a {
