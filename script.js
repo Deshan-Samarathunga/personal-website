@@ -22,7 +22,7 @@ const openSearchablePdfExport = async () => {
         downloadButton?.setAttribute("disabled", "true");
         document.title = "Deshan-Samarathunga-Portfolio";
         document.body.classList.add("is-printing");
-        showStatus("Opening print dialog. Choose 'Save as PDF' to keep the text selectable.", false);
+        showStatus("Opening print dialog. Choose Save as PDF to keep the text selectable.", false);
         await waitForPaint();
         window.print();
     } finally {
@@ -30,7 +30,7 @@ const openSearchablePdfExport = async () => {
             document.body.classList.remove("is-printing");
             document.title = originalTitle;
             downloadButton?.removeAttribute("disabled");
-            showStatus("Print dialog opened. Save as PDF for a searchable portfolio.");
+            showStatus("Print dialog opened. Choose Save as PDF in the print dialog.");
         }, 600);
     }
 };
