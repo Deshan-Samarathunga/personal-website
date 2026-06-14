@@ -1,23 +1,20 @@
 {
   "name": "portfolio",
-  "version": "1.0.0",
-  "description": "Personal Portfolio Website",
+  "version": "2.0.0",
+  "description": "Personal portfolio of Deshan Samarathunga — web app & ERP developer.",
   "main": "index.html",
   "scripts": {
-    "dev": "npx tailwindcss -i ./css/input.css -o ./css/style.css --watch",
-    "build": "npx tailwindcss -i ./css/input.css -o ./css/style.css --minify",
-    "serve": "npx http-server . -p 3000"
+    "serve": "npx http-server . -p 3000 -c-1"
   },
   "keywords": [
     "portfolio",
     "website",
-    "personal"
+    "personal",
+    "web-development"
   ],
   "author": "Deshan Samarathunga",
   "license": "MIT",
   "devDependencies": {
-    "tailwindcss": "^3.4.1",
     "http-server": "^14.1.1"
   }
 }
-
