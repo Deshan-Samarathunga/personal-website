@@ -2,9 +2,11 @@
   "name": "portfolio",
   "version": "2.0.0",
   "description": "Personal portfolio of Deshan Samarathunga — web app & ERP developer.",
-  "main": "index.html",
+  "private": true,
   "scripts": {
-    "serve": "npx http-server . -p 3000 -c-1"
+    "dev": "next dev",
+    "build": "next build",
+    "serve": "npx serve@latest out"
   },
   "keywords": [
     "portfolio",
@@ -14,7 +16,9 @@
   ],
   "author": "Deshan Samarathunga",
   "license": "MIT",
-  "devDependencies": {
-    "http-server": "^14.1.1"
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
   }
 }
