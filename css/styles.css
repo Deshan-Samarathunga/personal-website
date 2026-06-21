@@ -42,7 +42,7 @@ body {
     font-size: 17px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    overflow-x: clip;
     /* subtle grid texture */
     background-image:
         linear-gradient(rgba(11, 19, 32, 0.04) 1px, transparent 1px),
@@ -340,7 +340,8 @@ body:not(.is-loading) .preloader {
     transition: transform 0.25s var(--ease);
 }
 
-.main-nav a:hover::after {
+.main-nav a:hover::after,
+.main-nav a.active::after {
     transform: scaleX(1);
 }
 
@@ -433,7 +434,8 @@ body.menu-open .mobile-menu {
     color: var(--yellow);
 }
 
-.mobile-menu a:hover {
+.mobile-menu a:hover,
+.mobile-menu a.active {
     color: var(--yellow);
 }
 

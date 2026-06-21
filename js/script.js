@@ -113,25 +113,30 @@
         });
     }
 
-    /* ---------- Header hide on scroll down ---------- */
-    const header = document.getElementById("site-header");
-    let lastScroll = 0;
+    /* ---------- Scroll Spy for Navbar ---------- */
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".main-nav a, .mobile-menu a");
 
-    window.addEventListener(
-        "scroll",
-        () => {
-            const y = window.scrollY;
-            if (header && !document.body.classList.contains("menu-open")) {
-                if (y > lastScroll && y > 160) {
-                    header.classList.add("is-hidden");
-                } else {
-                    header.classList.remove("is-hidden");
+    if ("IntersectionObserver" in window) {
+        const observerOptions = {
+            root: null,
+            rootMargin: "-20% 0px -60% 0px",
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute("id");
+                    navLinks.forEach(link => {
+                        link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
+                    });
                 }
-            }
-            lastScroll = y;
-        },
-        { passive: true }
-    );
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
+    }
 
     /* ---------- Scroll reveal ---------- */
     const revealEls = document.querySelectorAll("[data-reveal]");
