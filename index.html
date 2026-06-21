@@ -13,17 +13,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/script.js" defer></script>
 </head>
 <body class="is-loading">
     <!-- Preloader -->
     <div class="preloader" id="preloader" aria-hidden="true">
-        <div class="preloader-inner">
-            <div class="preloader-tag">// LOADING PORTFOLIO</div>
-            <div class="preloader-name">DESHAN<br>SAMARATHUNGA</div>
-            <div class="preloader-bar"><span class="preloader-fill" id="preloader-fill"></span></div>
-            <div class="preloader-count"><span id="preloader-percent">00</span>%</div>
+        <div class="boxes">
+            <div class="box">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="box">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="box">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="box">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
     </div>
 
@@ -287,53 +307,34 @@
                 <article class="work-item panel" data-reveal data-hover>
                     <div class="work-meta">
                         <span class="work-type">ERP System</span>
-                        <span class="work-year">2025</span>
+                        <span class="work-year">2025 - 2026</span>
                     </div>
                     <h3>Kithul Flow Ops</h3>
                     <p>
-                        A production management system for kithul (treacle &amp; jaggery)
-                        product workflows — covering field collection, processing,
-                        packaging, labeling, inventory, orders, finance, and administration.
-                        Built around role-based workflows, batch traceability, and clean
-                        database design with reporting.
+                        A comprehensive ERP system for kithul (treacle &amp; jaggery) product
+                        workflows — featuring end-to-end batch traceability, master data
+                        management, and role-based modules for field collection, processing,
+                        packaging, inventory, and finance. Delivered as a robust full-stack
+                        web application with an optional native Windows desktop shell.
                     </p>
                     <ul class="work-tags">
-                        <li>Node.js</li><li>Express</li><li>TypeScript</li><li>PostgreSQL</li><li>React</li>
+                        <li>React / Tailwind</li><li>Node.js</li><li>TypeScript</li><li>PostgreSQL</li><li>Tauri &amp; Rust</li>
                     </ul>
+                    <a class="work-link" href="assets/kithul-flow-completion-letter.pdf" target="_blank" rel="noreferrer" data-hover>View Completion Letter &rarr;</a>
                 </article>
 
                 <article class="work-item panel" data-reveal data-hover>
                     <div class="work-meta">
-                        <span class="work-type">Web App</span>
-                        <span class="work-year">2024</span>
+                        <span class="work-type">Cross-Platform App</span>
+                        <span class="work-year">2026</span>
                     </div>
                     <h3>NoteNest</h3>
                     <p>
-                        A note management application for creating, organising, and managing
-                        personal notes through a clean, simple interface. A focused project
-                        for sharpening application structure, user-centred design, and
-                        practical data handling.
+                        A secure, cross-platform note management application consisting of a Next.js web client and a Flutter mobile app. Built as a monorepo, it leverages user's personal MEGA.nz accounts for private cloud storage and utilizes a unified Next.js API for seamless multi-device synchronization.
                     </p>
                     <ul class="work-tags">
-                        <li>JavaScript</li><li>UI design</li><li>Data handling</li>
+                        <li>Next.js</li><li>Flutter</li><li>TypeScript / Dart</li><li>MEGA API</li>
                     </ul>
-                </article>
-
-                <article class="work-item panel" data-reveal data-hover>
-                    <div class="work-meta">
-                        <span class="work-type">Open Source</span>
-                        <span class="work-year">Ongoing</span>
-                    </div>
-                    <h3>GitHub Developer Profile</h3>
-                    <p>
-                        My public GitHub profile and repositories, documenting a
-                        backend-focused learning journey — APIs, databases, and scalable web
-                        applications, with an emphasis on clear documentation and readable code.
-                    </p>
-                    <ul class="work-tags">
-                        <li>Documentation</li><li>APIs</li><li>Open source</li>
-                    </ul>
-                    <a class="work-link" href="https://github.com/Deshan-Samarathunga" target="_blank" rel="noreferrer" data-hover>View GitHub &rarr;</a>
                 </article>
             </div>
         </section>
@@ -348,9 +349,6 @@
                         Have a web app, ERP, or WordPress project in mind? Tell me what you
                         need built and I&rsquo;ll get back to you within a day.
                     </p>
-                    <a class="contact-email" href="mailto:deshansamarathunga.net@gmail.com" data-hover>
-                        deshansamarathunga.net@gmail.com
-                    </a>
                 </div>
                 <div class="contact-right">
                     <a class="contact-link" href="mailto:deshansamarathunga.net@gmail.com" data-hover>
@@ -371,7 +369,7 @@
     </main>
 
     <footer class="site-footer">
-        <span>&copy; 2026 Deshan Samarathunga</span>
+        <span><span class="copy-icon">&copy;</span> 2026 Deshan Samarathunga</span>
         <a href="https://github.com/Deshan-Samarathunga" target="_blank" rel="noreferrer" data-hover>GitHub</a>
         <span>Web Apps · ERP · WordPress</span>
     </footer>
