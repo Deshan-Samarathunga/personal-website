@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deshan-samarathunga.me/sitemap.xml
